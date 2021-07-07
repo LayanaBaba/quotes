@@ -5,15 +5,16 @@ package quotes;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import quotes.quotesFile.ApiQuotes;
 import quotes.quotesFile.Quotes;
 
-import java.awt.print.Book;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
+
+import java.io.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -22,55 +23,96 @@ import java.util.List;
 
 public class App {
 
-    public static <Founder> void main(String[] args) {
-//        quotesData();
-//        ArrayList <String> list = new ArrayList<>();
-//        File input = new File("C:/Users/Student/Downloads/recentquotes.json");'
+    public static  void main(String[] args) throws IOException {
+
+       fromJSONFile();
+       getFromApi();
+
+    }
+    public static void getFromApi() throws IOException {
+        String url = "http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en";
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+
+        connection.setRequestMethod("GET");
+        int responseCode = connection.getResponseCode();
+        System.out.println(responseCode);
+
+        if
+        (responseCode == HttpURLConnection.HTTP_OK){
 
 
-        try {
+
+            InputStreamReader inputStreamReader = new InputStreamReader(connection.getInputStream());
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+            String data = bufferedReader.readLine();
+//            System.out.println(data);
+
+            bufferedReader.close();
+
+            Gson gson = new Gson();
+            ApiQuotes quotes = gson.fromJson(data, ApiQuotes.class);
+
+          String jsonOutput = gson.toJson(quotes);
+            System.out.println(jsonOutput);
+            System.out.println("Author : " + quotes.getQuoteAuthor());
+            System.out.println("Text : " + quotes.getQuoteText());
+
+            Reader quoteReader = new FileReader("C:/Users/Student/asac/401/quotes/app/src/main/resources/quotesFile.json");
+            ApiQuotes[] numQuotes = gson.fromJson(quoteReader, ApiQuotes[].class);
+            ArrayList<ApiQuotes> array = new ArrayList<>(Arrays.asList(numQuotes));
+
+            array.add(quotes);
+            System.out.println(quotes.toString()+"lllllllllllllllllllll");
+
+            FileWriter infoFileWriter = new FileWriter("C:/Users/Student/asac/401/quotes/app/src/main/resources/quotesFile.json", false);
+            gson.toJson(array.toArray(), infoFileWriter);
+            infoFileWriter.close();
+
+        }else fromJSONFile();
+    }
+
+    public static <Founder> void fromJSONFile() throws IOException {
+
             // create Gson instance
             Gson gson = new Gson();
 
             // create a reader
             Reader reader = Files.newBufferedReader(Paths.get("C:/Users/Student/asac/401/quotes/app/src/main/resources/quotesFile.json"));
 
-            Type founderListType = new TypeToken<ArrayList<Founder>>(){}.getType();
+            Type founderListType = new TypeToken<ArrayList<Founder>>() {}.getType();
             List<Founder> founderList = gson.fromJson(reader, founderListType);
 
-            // convert JSON array to list of books
-//            List<Quotes> quotes = Arrays.asList(gson.fromJson(reader, Quotes.class));
-            // print books
             System.out.println(founderList.size());
-//            founderList.forEach(System.out::println);
-            Object txt =  founderList.get(getRandomNumber(1,155));
+
+            Object txt = founderList.get(getRandomNumber(1, 155));
             System.out.println(txt);
-                        quotesData(txt);
+            quotesData(txt);
 
             // close reader
             reader.close();
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
+    private static void quotesData (Object list){
 
-    }
-
-    private static void quotesData(Object list){
-//        Quotes quotes= new Quotes(list);
         Gson gson = new Gson();
 
-        String jsonOut=gson.toJson(list);
+        String jsonOut = gson.toJson(list);
         System.out.println(jsonOut);
 
         Quotes userObj = gson.fromJson(jsonOut, Quotes.class);
-        System.out.println("Text : "+userObj.getText());
-        System.out.println("Author : "+userObj.getAuthor());
+        System.out.println("Text : from json file " + userObj.getText());
+        System.out.println("Author : from json file" + userObj.getAuthor());
 
 
     }
 
-    public static int getRandomNumber(int min, int max) {
+    public static int getRandomNumber ( int min, int max){
         return (int) ((Math.random() * (max - min)) + min);
     }
 }
+
+

@@ -16,4 +16,12 @@ public class Quotes {
     public String getAuthor() {
         return author;
     }
+
+    @Override
+    public String toString() {
+        return "Quotes{" +
+                "text='" + text + '\'' +
+                ", author='" + author + '\'' +
+                '}';
+    }
 }
