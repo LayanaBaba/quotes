@@ -23,10 +23,6 @@ import java.util.List;
 public class App {
 
     public static <Founder> void main(String[] args) {
-//        quotesData();
-//        ArrayList <String> list = new ArrayList<>();
-//        File input = new File("C:/Users/Student/Downloads/recentquotes.json");'
-
 
         try {
             // create Gson instance
@@ -38,14 +34,11 @@ public class App {
             Type founderListType = new TypeToken<ArrayList<Founder>>(){}.getType();
             List<Founder> founderList = gson.fromJson(reader, founderListType);
 
-            // convert JSON array to list of books
-//            List<Quotes> quotes = Arrays.asList(gson.fromJson(reader, Quotes.class));
-            // print books
             System.out.println(founderList.size());
-//            founderList.forEach(System.out::println);
-            Object txt =  founderList.get(getRandomNumber(1,155));
-            System.out.println(txt);
-                        quotesData(txt);
+
+            Object qoute =  founderList.get(getRandomNumber(1,159));
+            System.out.println(qoute);
+                        quotesData(qoute);
 
             // close reader
             reader.close();
@@ -57,7 +50,7 @@ public class App {
     }
 
     private static void quotesData(Object list){
-//        Quotes quotes= new Quotes(list);
+
         Gson gson = new Gson();
 
         String jsonOut=gson.toJson(list);
