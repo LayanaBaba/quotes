@@ -10,11 +10,11 @@ import quotes.quotesFile.Quotes;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
-   @Test
-   public void appTest(){
-    Quotes quotes = new Quotes("kkkkkkk","ggggggg");
-
-    Assertions.assertEquals("kkkkkkk",quotes.getText());
-    Assertions.assertEquals("ggggggg",quotes.getAuthor());
-   }
+//   @Test
+//   public void appTest(){
+//    Quotes quotes = new Quotes("kkkkkkk","ggggggg");
+//
+//    Assertions.assertEquals("kkkkkkk",quotes.getText());
+//    Assertions.assertEquals("ggggggg",quotes.getAuthor());
+//   }
 }
